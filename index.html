@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#0f0f0f" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Hero System" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="icon-192.png" />
+  <title>Hero System</title>
+  <style>
+    :root {
+      --bg: #0f0f0f;
+      --surface: #1a1a1a;
+      --surface2: #222222;
+      --border: rgba(255,255,255,0.08);
+      --border2: rgba(255,255,255,0.14);
+      --text: #f0f0f0;
+      --text2: #888;
+      --text3: #555;
+      --green: #1D9E75;
+      --green-bg: rgba(29,158,117,0.12);
+      --blue: #378ADD;
+      --blue-bg: rgba(55,138,221,0.12);
+      --amber: #EF9F27;
+      --amber-bg: rgba(239,159,39,0.12);
+      --purple: #7F77DD;
+      --purple-bg: rgba(127,119,221,0.12);
+      --red: #E24B4A;
+      --radius: 14px;
+      --radius-sm: 8px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    html, body { height: 100%; background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif; overscroll-behavior: none; }
+
+    #app { max-width: 480px; margin: 0 auto; padding: env(safe-area-inset-top, 16px) 16px env(safe-area-inset-bottom, 80px); min-height: 100vh; }
+
+    /* Header */
+    .header { padding: 20px 0 16px; display: flex; justify-content: space-between; align-items: flex-start; }
+    .header-left h1 { font-size: 26px; font-weight: 700; letter-spacing: -0.5px; }
+    .header-left p { font-size: 13px; color: var(--text2); margin-top: 2px; }
+    .header-date { font-size: 12px; color: var(--text3); text-align: right; line-height: 1.4; }
+
+    /* Streak cards */
+    .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 24px; }
+    .stat-card { background: var(--surface); border-radius: var(--radius-sm); padding: 10px 8px; text-align: center; border: 0.5px solid var(--border); }
+    .stat-num { font-size: 22px; font-weight: 700; color: var(--text); }
+    .stat-num.green { color: var(--green); }
+    .stat-label { font-size: 10px; color: var(--text2); margin-top: 2px; line-height: 1.3; }
+
+    /* Section headers */
+    .section-label { font-size: 11px; font-weight: 600; color: var(--text3); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 10px; margin-top: 24px; }
+
+    /* Habits */
+    .habit-list { display: flex; flex-direction: column; gap: 8px; }
+    .habit-row { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 14px 14px; display: flex; align-items: center; gap: 12px; transition: background 0.15s; cursor: pointer; user-select: none; }
+    .habit-row:active { background: var(--surface2); }
+    .habit-row.done { border-color: rgba(29,158,117,0.3); background: rgba(29,158,117,0.07); }
+    .habit-row.locked { opacity: 0.45; }
+    .habit-check { width: 26px; height: 26px; border-radius: 50%; border: 1.5px solid var(--border2); flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: all 0.15s; }
+    .habit-row.done .habit-check { background: var(--green); border-color: var(--green); }
+    .habit-check-icon { display: none; }
+    .habit-row.done .habit-check-icon { display: block; }
+    .habit-row.done .habit-check-empty { display: none; }
+    .habit-info { flex: 1; min-width: 0; }
+    .habit-name { font-size: 15px; font-weight: 500; color: var(--text); }
+    .habit-row.done .habit-name { color: var(--text2); text-decoration: line-through; text-decoration-color: var(--text3); }
+    .habit-meta { font-size: 12px; color: var(--text3); margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .habit-streak { font-size: 12px; color: var(--text3); background: var(--surface2); padding: 3px 8px; border-radius: 20px; white-space: nowrap; border: 0.5px solid var(--border); }
+    .habit-streak.hot { background: var(--amber-bg); color: var(--amber); border-color: rgba(239,159,39,0.2); }
+
+    /* Gate notice */
+    .gate-notice { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius-sm); padding: 11px 14px; display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--text2); margin-top: 12px; }
+    .gate-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .gate-dot.locked { background: var(--red); }
+    .gate-dot.unlocked { background: var(--green); }
+
+    /* Todo */
+    .tag-row { display: flex; gap: 6px; margin-bottom: 10px; overflow-x: auto; padding-bottom: 2px; scrollbar-width: none; }
+    .tag-row::-webkit-scrollbar { display: none; }
+    .tag-pill { font-size: 12px; padding: 5px 12px; border-radius: 20px; border: 0.5px solid var(--border2); background: var(--surface); color: var(--text2); cursor: pointer; white-space: nowrap; transition: all 0.1s; }
+    .tag-pill.active.general { background: var(--blue-bg); color: var(--blue); border-color: rgba(55,138,221,0.3); }
+    .tag-pill.active.coding { background: rgba(29,158,117,0.12); color: var(--green); border-color: rgba(29,158,117,0.3); }
+    .tag-pill.active.book { background: var(--amber-bg); color: var(--amber); border-color: rgba(239,159,39,0.3); }
+    .tag-pill.active.entertainment { background: var(--purple-bg); color: var(--purple); border-color: rgba(127,119,221,0.3); }
+
+    .add-row { display: flex; gap: 8px; margin-bottom: 12px; }
+    .add-row input { flex: 1; background: var(--surface); border: 0.5px solid var(--border2); border-radius: var(--radius-sm); padding: 12px 14px; font-size: 15px; color: var(--text); outline: none; transition: border-color 0.15s; }
+    .add-row input::placeholder { color: var(--text3); }
+    .add-row input:focus { border-color: var(--blue); }
+    .add-row button { background: var(--blue); border: none; border-radius: var(--radius-sm); padding: 0 18px; font-size: 20px; color: white; cursor: pointer; font-weight: 300; transition: opacity 0.1s; }
+    .add-row button:active { opacity: 0.7; }
+
+    .todo-list { display: flex; flex-direction: column; gap: 6px; }
+    .todo-item { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius-sm); padding: 12px 14px; display: flex; align-items: center; gap: 10px; transition: background 0.1s; }
+    .todo-item.done { opacity: 0.45; }
+    .todo-cb { width: 20px; height: 20px; border-radius: 5px; border: 1.5px solid var(--border2); flex-shrink: 0; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.15s; }
+    .todo-item.done .todo-cb { background: var(--blue); border-color: var(--blue); }
+    .todo-text { flex: 1; font-size: 14px; color: var(--text); }
+    .todo-item.done .todo-text { text-decoration: line-through; color: var(--text3); }
+    .todo-tag-badge { font-size: 11px; padding: 2px 8px; border-radius: 10px; white-space: nowrap; }
+    .todo-tag-badge.coding { background: rgba(29,158,117,0.15); color: var(--green); }
+    .todo-tag-badge.book { background: var(--amber-bg); color: var(--amber); }
+    .todo-tag-badge.entertainment { background: var(--purple-bg); color: var(--purple); }
+    .todo-del { background: none; border: none; color: var(--text3); font-size: 18px; cursor: pointer; padding: 0 2px; line-height: 1; flex-shrink: 0; transition: color 0.1s; }
+    .todo-del:active { color: var(--red); }
+    .empty-state { font-size: 14px; color: var(--text3); padding: 16px 0; text-align: center; }
+
+    /* Week strip */
+    .week-row { display: flex; gap: 6px; margin-top: 0; }
+    .week-day { flex: 1; text-align: center; }
+    .week-label { font-size: 10px; color: var(--text3); margin-bottom: 5px; }
+    .week-circle { width: 32px; height: 32px; border-radius: 50%; margin: 0 auto; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; }
+    .week-circle.done { background: var(--green); color: white; }
+    .week-circle.today-pending { border: 1.5px solid var(--blue); color: var(--blue); }
+    .week-circle.past-missed { background: var(--surface2); color: var(--text3); }
+    .week-circle.future { background: transparent; color: var(--text3); }
+
+    .reset-link { display: block; text-align: center; font-size: 12px; color: var(--text3); margin-top: 12px; cursor: pointer; text-decoration: underline; padding: 8px; }
+
+    /* Edit buttons on todos */
+    .todo-edit { background: none; border: none; color: var(--text3); font-size: 14px; cursor: pointer; padding: 0 4px; line-height: 1; flex-shrink: 0; transition: color 0.1s; }
+    .todo-edit:active { color: var(--blue); }
+
+    /* Bottom sheet modal */
+    .sheet-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 100; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
+    .sheet-overlay.open { opacity: 1; pointer-events: all; }
+    .sheet { position: fixed; bottom: 0; left: 0; right: 0; background: #1a1a1a; border-radius: 20px 20px 0 0; padding: 0 16px env(safe-area-inset-bottom, 20px); z-index: 101; transform: translateY(100%); transition: transform 0.25s cubic-bezier(0.32,0.72,0,1); max-width: 480px; margin: 0 auto; }
+    .sheet.open { transform: translateY(0); }
+    .sheet-handle { width: 36px; height: 4px; background: var(--border2); border-radius: 2px; margin: 12px auto 20px; }
+    .sheet-title { font-size: 13px; font-weight: 600; color: var(--text3); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 14px; }
+    .sheet-input { width: 100%; background: var(--surface2); border: 0.5px solid var(--border2); border-radius: var(--radius-sm); padding: 13px 14px; font-size: 16px; color: var(--text); outline: none; margin-bottom: 12px; }
+    .sheet-input:focus { border-color: var(--blue); }
+    .sheet-tags { display: flex; gap: 6px; margin-bottom: 18px; flex-wrap: wrap; }
+    .sheet-tag { font-size: 12px; padding: 6px 14px; border-radius: 20px; border: 0.5px solid var(--border2); background: var(--surface2); color: var(--text2); cursor: pointer; transition: all 0.1s; }
+    .sheet-tag.active.general { background: var(--blue-bg); color: var(--blue); border-color: rgba(55,138,221,0.3); }
+    .sheet-tag.active.coding { background: rgba(29,158,117,0.12); color: var(--green); border-color: rgba(29,158,117,0.3); }
+    .sheet-tag.active.book { background: var(--amber-bg); color: var(--amber); border-color: rgba(239,159,39,0.3); }
+    .sheet-tag.active.entertainment { background: var(--purple-bg); color: var(--purple); border-color: rgba(127,119,221,0.3); }
+    .sheet-actions { display: flex; gap: 8px; padding-bottom: 8px; }
+    .sheet-save { flex: 1; background: var(--blue); border: none; border-radius: var(--radius-sm); padding: 14px; font-size: 15px; font-weight: 600; color: white; cursor: pointer; transition: opacity 0.1s; }
+    .sheet-save:active { opacity: 0.8; }
+    .sheet-cancel { background: var(--surface2); border: 0.5px solid var(--border2); border-radius: var(--radius-sm); padding: 14px 18px; font-size: 15px; color: var(--text2); cursor: pointer; transition: opacity 0.1s; }
+    .sheet-cancel:active { opacity: 0.7; }
+    .sheet-delete { background: rgba(226,75,74,0.12); border: 0.5px solid rgba(226,75,74,0.25); border-radius: var(--radius-sm); padding: 14px 16px; font-size: 15px; color: var(--red); cursor: pointer; transition: opacity 0.1s; }
+    .sheet-delete:active { opacity: 0.7; }
+    .sheet-meta-input { width: 100%; background: var(--surface2); border: 0.5px solid var(--border2); border-radius: var(--radius-sm); padding: 11px 14px; font-size: 14px; color: var(--text); outline: none; margin-bottom: 12px; }
+    .sheet-meta-input:focus { border-color: var(--blue); }
+    .sheet-meta-input::placeholder { color: var(--text3); }
+    .sheet-toggle-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; margin-bottom: 14px; border-top: 0.5px solid var(--border); border-bottom: 0.5px solid var(--border); }
+    .sheet-toggle-label { font-size: 14px; color: var(--text2); }
+    .toggle-switch { position: relative; width: 44px; height: 26px; }
+    .toggle-switch input { opacity: 0; width: 0; height: 0; }
+    .toggle-slider { position: absolute; inset: 0; background: var(--surface2); border-radius: 13px; cursor: pointer; transition: background 0.2s; border: 0.5px solid var(--border2); }
+    .toggle-slider:before { content: ''; position: absolute; width: 20px; height: 20px; left: 2px; top: 2px; background: var(--text3); border-radius: 50%; transition: transform 0.2s, background 0.2s; }
+    .toggle-switch input:checked + .toggle-slider { background: rgba(29,158,117,0.25); border-color: rgba(29,158,117,0.4); }
+    .toggle-switch input:checked + .toggle-slider:before { transform: translateX(18px); background: var(--green); }
+    .habit-edit-btn { background: none; border: none; color: var(--text3); font-size: 14px; cursor: pointer; padding: 6px; line-height: 1; flex-shrink: 0; transition: color 0.1s; }
+    .habit-edit-btn:active { color: var(--blue); }
+    .section-header-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; margin-top: 24px; }
+    .section-header-row .section-label { margin: 0; }
+    .add-habit-btn { font-size: 12px; color: var(--blue); background: none; border: none; cursor: pointer; padding: 2px 0; }
+  </style>
+</head>
+<body>
+<div id="app">
+  <div class="header">
+    <div class="header-left">
+      <h1>Hero System</h1>
+      <p>Daily non-zero rule</p>
+    </div>
+    <div class="header-date" id="header-date"></div>
+  </div>
+
+  <div class="stats-row" id="stats-row"></div>
+
+  <div class="section-header-row">
+    <div class="section-label">Habits</div>
+    <button class="add-habit-btn" onclick="openAddHabit()">+ Add habit</button>
+  </div>
+  <div class="habit-list" id="habit-list"></div>
+  <div class="gate-notice" id="gate-notice">
+    <div class="gate-dot locked" id="gate-dot"></div>
+    <span id="gate-text">Complete Hero Coding to unlock entertainment gates</span>
+  </div>
+
+  <div class="section-label">Today's tasks</div>
+  <div class="tag-row" id="tag-row">
+    <div class="tag-pill active general" onclick="setTag('general')">General</div>
+    <div class="tag-pill coding" onclick="setTag('coding')">Coding</div>
+    <div class="tag-pill book" onclick="setTag('book')">Book project</div>
+    <div class="tag-pill entertainment" onclick="setTag('entertainment')">Entertainment</div>
+  </div>
+  <div class="add-row">
+    <input type="text" id="todo-input" placeholder="Add a task..." />
+    <button id="add-btn">+</button>
+  </div>
+  <div class="todo-list" id="todo-list"></div>
+
+  <div class="section-label">This week — Hero Coding</div>
+  <div class="week-row" id="week-row"></div>
+  <span class="reset-link" onclick="resetToday()">Reset today's habits</span>
+</div>
+
+<!-- Edit bottom sheet (todos) -->
+<div class="sheet-overlay" id="sheet-overlay" onclick="closeSheet()"></div>
+<div class="sheet" id="edit-sheet">
+  <div class="sheet-handle"></div>
+  <div class="sheet-title" id="sheet-title">Edit task</div>
+  <input type="text" class="sheet-input" id="sheet-input" placeholder="Task name..." />
+  <div class="sheet-tags" id="sheet-tags"></div>
+  <div class="sheet-actions">
+    <button class="sheet-cancel" onclick="closeSheet()">Cancel</button>
+    <button class="sheet-save" onclick="saveEdit()">Save</button>
+  </div>
+</div>
+
+<!-- Habit edit bottom sheet -->
+<div class="sheet-overlay" id="habit-sheet-overlay" onclick="closeHabitSheet()"></div>
+<div class="sheet" id="habit-edit-sheet">
+  <div class="sheet-handle"></div>
+  <div class="sheet-title" id="habit-sheet-title">Edit habit</div>
+  <input type="text" class="sheet-input" id="habit-sheet-name" placeholder="Habit name..." />
+  <input type="text" class="sheet-meta-input" id="habit-sheet-meta" placeholder="Description (e.g. 10 min min · 45–60 min normal)" />
+  <div class="sheet-toggle-row">
+    <span class="sheet-toggle-label">Requires Hero Coding first</span>
+    <label class="toggle-switch">
+      <input type="checkbox" id="habit-sheet-gated" />
+      <span class="toggle-slider"></span>
+    </label>
+  </div>
+  <div class="sheet-actions" id="habit-sheet-actions">
+    <button class="sheet-delete" id="habit-sheet-del" onclick="deleteHabit()">Delete</button>
+    <button class="sheet-cancel" onclick="closeHabitSheet()">Cancel</button>
+    <button class="sheet-save" onclick="saveHabitEdit()">Save</button>
+  </div>
+</div>
+
+<script>
+const DEFAULT_HABITS = [
+  { id: 'coding',    name: 'Hero Coding',          meta: '10 min min · 45–60 min normal', gated: false },
+  { id: 'sleep',     name: 'Sleep before 10:30 PM', meta: 'Non-negotiable',                gated: false },
+  { id: 'instagram', name: 'Instagram ≤ 30 min',   meta: 'Only after coding done',        gated: true  },
+  { id: 'manhwa',    name: 'Manhwa ≤ 1 hr',        meta: 'Only after coding done',        gated: true  },
+  { id: 'book',      name: 'The Ashen Dawn',        meta: 'Book project — daily progress', gated: false },
+];
+const DAYS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+
+function todayKey() { return new Date().toISOString().slice(0,10); }
+
+let state = JSON.parse(localStorage.getItem('hero_v2') || 'null') || {
+  habits: DEFAULT_HABITS,
+  habitsDone: {}, todos: [], codingStreak: 0, longestStreak: 0
+};
+if (!state.habits) state.habits = DEFAULT_HABITS;
+let selectedTag = 'general';
+let nextId = Date.now();
+
+function save() { localStorage.setItem('hero_v2', JSON.stringify(state)); }
+
+function isCodingDone() {
+  const k = todayKey();
+  return !!(state.habitsDone[k] && state.habitsDone[k]['coding']);
+}
+
+function getHabitStreak(id) {
+  let streak = 0, d = new Date();
+  for (let i = 0; i < 60; i++) {
+    const k = d.toISOString().slice(0,10);
+    if (state.habitsDone[k] && state.habitsDone[k][id]) { streak++; d.setDate(d.getDate()-1); }
+    else break;
+  }
+  return streak;
+}
+
+function updateCodingStreak() {
+  let streak = 0, d = new Date();
+  for (let i = 0; i < 365; i++) {
+    const k = d.toISOString().slice(0,10);
+    if (state.habitsDone[k] && state.habitsDone[k]['coding']) { streak++; d.setDate(d.getDate()-1); }
+    else break;
+  }
+  state.codingStreak = streak;
+  if (streak > (state.longestStreak || 0)) state.longestStreak = streak;
+}
+
+function toggleHabit(id) {
+  const k = todayKey();
+  const h = state.habits.find(h => h.id === id);
+  if (h && h.gated && !isCodingDone()) return;
+  if (!state.habitsDone[k]) state.habitsDone[k] = {};
+  state.habitsDone[k][id] = !state.habitsDone[k][id];
+  if (id === 'coding') updateCodingStreak();
+  save(); render();
+}
+
+function setTag(tag) {
+  selectedTag = tag;
+  document.querySelectorAll('.tag-pill').forEach(el => {
+    el.className = 'tag-pill' + (el.textContent.toLowerCase().replace(' project','') === tag || (tag==='book' && el.textContent==='Book project') ? ' active ' + tag : '');
+  });
+  document.getElementById('tag-row').querySelectorAll('.tag-pill').forEach(el => {
+    const t = el.dataset.tag;
+    el.className = 'tag-pill' + (t === tag ? ' active ' + tag : '');
+  });
+  renderTagRow();
+}
+
+function addTodo() {
+  const input = document.getElementById('todo-input');
+  const text = input.value.trim();
+  if (!text) return;
+  state.todos.push({ id: nextId++, text, tag: selectedTag, done: false, date: todayKey() });
+  input.value = '';
+  save(); renderTodos();
+}
+
+function toggleTodo(id) {
+  const t = state.todos.find(t => t.id === id);
+  if (t) t.done = !t.done;
+  save(); renderTodos(); renderStats();
+}
+
+function deleteTodo(id) {
+  state.todos = state.todos.filter(t => t.id !== id);
+  save(); renderTodos(); renderStats();
+}
+
+function resetToday() {
+  if (!confirm('Reset all habits for today?')) return;
+  state.habitsDone[todayKey()] = {};
+  save(); render();
+}
+
+function renderStats() {
+  const k = todayKey();
+  const todayHabits = state.habitsDone[k] || {};
+  const doneH = state.habits.filter(h => todayHabits[h.id]).length;
+  const todayTodos = state.todos.filter(t => t.date === k);
+  const doneT = todayTodos.filter(t => t.done).length;
+  document.getElementById('stats-row').innerHTML = `
+    <div class="stat-card"><div class="stat-num green">${state.codingStreak||0}</div><div class="stat-label">Coding streak</div></div>
+    <div class="stat-card"><div class="stat-num">${doneH}/${state.habits.length}</div><div class="stat-label">Habits today</div></div>
+    <div class="stat-card"><div class="stat-num">${doneT}/${todayTodos.length||0}</div><div class="stat-label">Tasks done</div></div>
+    <div class="stat-card"><div class="stat-num">${state.longestStreak||0}</div><div class="stat-label">Best streak</div></div>
+  `;
+}
+
+function renderHabits() {
+  const k = todayKey();
+  const todayH = state.habitsDone[k] || {};
+  const codingDone = isCodingDone();
+  document.getElementById('habit-list').innerHTML = state.habits.map(h => {
+    const done = !!todayH[h.id];
+    const locked = h.gated && !codingDone;
+    const streak = getHabitStreak(h.id);
+    const hot = streak >= 3;
+    const meta = locked ? '🔒 Complete Hero Coding first' : h.meta;
+    return `<div class="habit-row${done?' done':''}${locked?' locked':''}" onclick="toggleHabit('${h.id}')">
+      <div class="habit-check">
+        <svg class="habit-check-icon" width="13" height="10" viewBox="0 0 13 10" fill="none"><path d="M1.5 5L5 8.5L11.5 1.5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="habit-info">
+        <div class="habit-name">${h.name}</div>
+        <div class="habit-meta">${meta}</div>
+      </div>
+      ${streak > 0 ? `<div class="habit-streak${hot?' hot':''}">${streak}d${hot?' 🔥':''}</div>` : ''}
+      <button class="habit-edit-btn" onclick="event.stopPropagation();openHabitEdit('${h.id}')">✎</button>
+    </div>`;
+  }).join('');
+
+  const dot = document.getElementById('gate-dot');
+  const txt = document.getElementById('gate-text');
+  dot.className = 'gate-dot ' + (codingDone ? 'unlocked' : 'locked');
+  txt.textContent = codingDone
+    ? 'Hero Coding done — entertainment unlocked ✓'
+    : 'Complete Hero Coding to unlock entertainment gates';
+}
+
+function renderTagRow() {
+  const row = document.getElementById('tag-row');
+  const tags = [['general','General'],['coding','Coding'],['book','Book project'],['entertainment','Entertainment']];
+  row.innerHTML = tags.map(([t,label]) =>
+    `<div class="tag-pill${t===selectedTag?' active '+t:''}" data-tag="${t}" onclick="setTagDirect('${t}')">${label}</div>`
+  ).join('');
+}
+
+function setTagDirect(tag) { selectedTag = tag; renderTagRow(); }
+
+function renderTodos() {
+  const k = todayKey();
+  const all = state.todos.filter(t => t.date === k);
+  const pending = all.filter(t => !t.done);
+  const done = all.filter(t => t.done);
+  const ordered = [...pending, ...done];
+  const list = document.getElementById('todo-list');
+  if (ordered.length === 0) {
+    list.innerHTML = '<div class="empty-state">No tasks yet — add one above</div>';
+    return;
+  }
+  list.innerHTML = ordered.map(t => `
+    <div class="todo-item${t.done?' done':''}">
+      <div class="todo-cb" onclick="toggleTodo(${t.id})">
+        ${t.done ? '<svg width="11" height="8" viewBox="0 0 11 8" fill="none"><path d="M1 4L4 7L10 1" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>' : ''}
+      </div>
+      <span class="todo-text">${t.text}</span>
+      ${t.tag && t.tag!=='general' ? `<span class="todo-tag-badge ${t.tag}">${t.tag==='book'?'book':t.tag}</span>` : ''}
+      <button class="todo-edit" onclick="openEdit(${t.id})">✎</button>
+      <button class="todo-del" onclick="deleteTodo(${t.id})">×</button>
+    </div>`).join('');
+}
+
+function renderWeek() {
+  const today = new Date();
+  const todayIdx = today.getDay();
+  const row = document.getElementById('week-row');
+  row.innerHTML = DAYS.map((label, i) => {
+    const d = new Date(today);
+    d.setDate(today.getDate() - todayIdx + i);
+    const k = d.toISOString().slice(0,10);
+    const done = !!(state.habitsDone[k] && state.habitsDone[k]['coding']);
+    const isToday = i === todayIdx;
+    const isFuture = i > todayIdx;
+    let cls = 'week-circle ';
+    let content = '';
+    if (done) { cls += 'done'; content = '✓'; }
+    else if (isToday) { cls += 'today-pending'; content = '·'; }
+    else if (isFuture) { cls += 'future'; content = ''; }
+    else { cls += 'past-missed'; content = ''; }
+    return `<div class="week-day"><div class="week-label">${label}</div><div class="${cls}">${content}</div></div>`;
+  }).join('');
+}
+
+function render() {
+  const now = new Date();
+  document.getElementById('header-date').innerHTML =
+    now.toLocaleDateString('en-IN', {weekday:'short', day:'numeric', month:'short'}).replace(',','<br>');
+  renderStats();
+  renderHabits();
+  renderTagRow();
+  renderTodos();
+  renderWeek();
+}
+
+document.getElementById('add-btn').addEventListener('click', addTodo);
+document.getElementById('todo-input').addEventListener('keydown', e => { if(e.key==='Enter') addTodo(); });
+
+// Todo edit sheet
+let editingId = null;
+let editTag = 'general';
+
+function openEdit(id) {
+  const t = state.todos.find(t => t.id === id);
+  if (!t) return;
+  editingId = id;
+  editTag = t.tag || 'general';
+  document.getElementById('sheet-title').textContent = 'Edit task';
+  document.getElementById('sheet-input').value = t.text;
+  renderSheetTags();
+  document.getElementById('sheet-overlay').classList.add('open');
+  document.getElementById('edit-sheet').classList.add('open');
+  setTimeout(() => document.getElementById('sheet-input').focus(), 250);
+}
+
+function closeSheet() {
+  editingId = null;
+  document.getElementById('sheet-overlay').classList.remove('open');
+  document.getElementById('edit-sheet').classList.remove('open');
+}
+
+function renderSheetTags() {
+  const tags = [['general','General'],['coding','Coding'],['book','Book project'],['entertainment','Entertainment']];
+  document.getElementById('sheet-tags').innerHTML = tags.map(([t,label]) =>
+    `<div class="sheet-tag${t===editTag?' active '+t:''}" onclick="setEditTag('${t}')">${label}</div>`
+  ).join('');
+}
+
+function setEditTag(tag) { editTag = tag; renderSheetTags(); }
+
+function saveEdit() {
+  const text = document.getElementById('sheet-input').value.trim();
+  if (!text || editingId === null) { closeSheet(); return; }
+  const t = state.todos.find(t => t.id === editingId);
+  if (t) { t.text = text; t.tag = editTag; }
+  save(); renderTodos(); renderStats();
+  closeSheet();
+}
+
+document.getElementById('sheet-input').addEventListener('keydown', e => { if(e.key==='Enter') saveEdit(); });
+
+// Habit edit sheet
+let editingHabitId = null;
+let isAddingHabit = false;
+
+function openHabitEdit(id) {
+  const h = state.habits.find(h => h.id === id);
+  if (!h) return;
+  editingHabitId = id;
+  isAddingHabit = false;
+  document.getElementById('habit-sheet-title').textContent = 'Edit habit';
+  document.getElementById('habit-sheet-name').value = h.name;
+  document.getElementById('habit-sheet-meta').value = h.meta;
+  document.getElementById('habit-sheet-gated').checked = !!h.gated;
+  document.getElementById('habit-sheet-del').style.display = '';
+  document.getElementById('habit-sheet-overlay').classList.add('open');
+  document.getElementById('habit-edit-sheet').classList.add('open');
+  setTimeout(() => document.getElementById('habit-sheet-name').focus(), 250);
+}
+
+function openAddHabit() {
+  editingHabitId = null;
+  isAddingHabit = true;
+  document.getElementById('habit-sheet-title').textContent = 'New habit';
+  document.getElementById('habit-sheet-name').value = '';
+  document.getElementById('habit-sheet-meta').value = '';
+  document.getElementById('habit-sheet-gated').checked = false;
+  document.getElementById('habit-sheet-del').style.display = 'none';
+  document.getElementById('habit-sheet-overlay').classList.add('open');
+  document.getElementById('habit-edit-sheet').classList.add('open');
+  setTimeout(() => document.getElementById('habit-sheet-name').focus(), 250);
+}
+
+function closeHabitSheet() {
+  editingHabitId = null;
+  isAddingHabit = false;
+  document.getElementById('habit-sheet-overlay').classList.remove('open');
+  document.getElementById('habit-edit-sheet').classList.remove('open');
+}
+
+function saveHabitEdit() {
+  const name = document.getElementById('habit-sheet-name').value.trim();
+  if (!name) { closeHabitSheet(); return; }
+  const meta = document.getElementById('habit-sheet-meta').value.trim();
+  const gated = document.getElementById('habit-sheet-gated').checked;
+  if (isAddingHabit) {
+    const id = 'habit_' + Date.now();
+    state.habits.push({ id, name, meta, gated });
+  } else {
+    const h = state.habits.find(h => h.id === editingHabitId);
+    if (h) { h.name = name; h.meta = meta; h.gated = gated; }
+  }
+  save(); renderHabits(); renderStats();
+  closeHabitSheet();
+}
+
+function deleteHabit() {
+  if (!editingHabitId) return;
+  if (!confirm('Delete this habit?')) return;
+  state.habits = state.habits.filter(h => h.id !== editingHabitId);
+  save(); renderHabits(); renderStats();
+  closeHabitSheet();
+}
+
+document.getElementById('habit-sheet-name').addEventListener('keydown', e => { if(e.key==='Enter') document.getElementById('habit-sheet-meta').focus(); });
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => navigator.serviceWorker.register('sw.js'));
+}
+
+render();
+</script>
+</body>
+</html>
