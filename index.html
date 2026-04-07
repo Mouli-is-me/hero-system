@@ -556,7 +556,10 @@ function deleteHabit() {
 document.getElementById('habit-sheet-name').addEventListener('keydown', e => { if(e.key==='Enter') document.getElementById('habit-sheet-meta').focus(); });
 
 if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => navigator.serviceWorker.register('sw.js'));
+  // Unregister any old broken service workers
+  navigator.serviceWorker.getRegistrations().then(regs => {
+    regs.forEach(reg => reg.unregister());
+  });
 }
 
 render();
