@@ -1,8 +1,10 @@
-const CACHE = 'hero-system-v1';
+const CACHE = 'hero-system-v2';
 const ASSETS = [
-  '/',
-  '/index.html',
-  '/manifest.json'
+  '/hero-system/',
+  '/hero-system/index.html',
+  '/hero-system/manifest.json',
+  '/hero-system/icon-192.png',
+  '/hero-system/icon-512.png'
 ];
 
 self.addEventListener('install', e => {
