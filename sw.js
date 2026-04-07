@@ -1,10 +1,9 @@
-const CACHE = 'hero-system-v2';
+const CACHE = 'hero-system-v3';
 const ASSETS = [
-  '/hero-system/',
-  '/hero-system/index.html',
-  '/hero-system/manifest.json',
-  '/hero-system/icon-192.png',
-  '/hero-system/icon-512.png'
+  'https://mouli-is-me.github.io/hero-system/index.html',
+  'https://mouli-is-me.github.io/hero-system/manifest.json',
+  'https://mouli-is-me.github.io/hero-system/icon-192.png',
+  'https://mouli-is-me.github.io/hero-system/icon-512.png'
 ];
 
 self.addEventListener('install', e => {
