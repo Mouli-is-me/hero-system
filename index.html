@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <meta name="theme-color" content="#0f0f0f" />
+  <meta name="theme-color" content="#080810" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="Hero System" />
@@ -12,34 +12,41 @@
   <title>Hero System</title>
   <style>
     :root {
-      --bg: #0f0f0f;
-      --surface: #1a1a1a;
-      --surface2: #222222;
-      --border: rgba(255,255,255,0.08);
-      --border2: rgba(255,255,255,0.14);
-      --text: #f0f0f0;
-      --text2: #888;
-      --text3: #555;
-      --green: #1D9E75;
-      --green-bg: rgba(29,158,117,0.12);
-      --blue: #378ADD;
-      --blue-bg: rgba(55,138,221,0.12);
-      --amber: #EF9F27;
-      --amber-bg: rgba(239,159,39,0.12);
-      --purple: #7F77DD;
-      --purple-bg: rgba(127,119,221,0.12);
-      --red: #E24B4A;
+      --bg: #080810;
+      --surface: #0e0e1a;
+      --surface2: #14142a;
+      --surface3: #1a1a35;
+      --border: rgba(100,80,255,0.12);
+      --border2: rgba(100,80,255,0.22);
+      --border3: rgba(100,80,255,0.35);
+      --text: #e8e8ff;
+      --text2: #7878aa;
+      --text3: #44446a;
+      --blue: #38bdf8;
+      --blue-dim: rgba(56,189,248,0.12);
+      --blue-glow: rgba(56,189,248,0.25);
+      --purple: #a78bfa;
+      --purple-dim: rgba(167,139,250,0.12);
+      --purple-glow: rgba(167,139,250,0.25);
+      --violet: #7c3aed;
+      --green: #34d399;
+      --green-dim: rgba(52,211,153,0.12);
+      --amber: #fbbf24;
+      --amber-dim: rgba(251,191,36,0.12);
+      --red: #f87171;
+      --red-dim: rgba(248,113,113,0.12);
+      --accent: #38bdf8;
       --radius: 14px;
-      --radius-sm: 8px;
+      --radius-sm: 10px;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
     html, body { height: 100%; background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif; overscroll-behavior: none; }
 
-    #app { max-width: 480px; margin: 0 auto; padding: env(safe-area-inset-top, 16px) 16px env(safe-area-inset-bottom, 80px); min-height: 100vh; }
+    #app { max-width: 480px; margin: 0 auto; padding: env(safe-area-inset-top, 16px) 16px env(safe-area-inset-bottom, 90px); min-height: 100vh; }
 
     /* Header */
     .header { padding: 20px 0 16px; display: flex; justify-content: space-between; align-items: flex-start; }
-    .header-left h1 { font-size: 26px; font-weight: 700; letter-spacing: -0.5px; }
+    .header-left h1 { font-size: 26px; font-weight: 700; letter-spacing: -0.5px; background: linear-gradient(90deg, var(--blue), var(--purple)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
     .header-left p { font-size: 13px; color: var(--text2); margin-top: 2px; }
     .header-date { font-size: 12px; color: var(--text3); text-align: right; line-height: 1.4; }
 
@@ -47,7 +54,7 @@
     .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 24px; }
     .stat-card { background: var(--surface); border-radius: var(--radius-sm); padding: 10px 8px; text-align: center; border: 0.5px solid var(--border); }
     .stat-num { font-size: 22px; font-weight: 700; color: var(--text); }
-    .stat-num.green { color: var(--green); }
+    .stat-num.accent { color: var(--blue); }
     .stat-label { font-size: 10px; color: var(--text2); margin-top: 2px; line-height: 1.3; }
 
     /* Section headers */
@@ -55,12 +62,12 @@
 
     /* Habits */
     .habit-list { display: flex; flex-direction: column; gap: 8px; }
-    .habit-row { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 14px 14px; display: flex; align-items: center; gap: 12px; transition: background 0.15s; cursor: pointer; user-select: none; }
+    .habit-row { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 14px 14px; display: flex; align-items: center; gap: 12px; transition: background 0.15s, border-color 0.15s; cursor: pointer; user-select: none; }
     .habit-row:active { background: var(--surface2); }
-    .habit-row.done { border-color: rgba(29,158,117,0.3); background: rgba(29,158,117,0.07); }
-    .habit-row.locked { opacity: 0.45; }
+    .habit-row.done { border-color: rgba(52,211,153,0.25); background: rgba(52,211,153,0.05); }
+    .habit-row.locked { opacity: 0.4; }
     .habit-check { width: 26px; height: 26px; border-radius: 50%; border: 1.5px solid var(--border2); flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: all 0.15s; }
-    .habit-row.done .habit-check { background: var(--green); border-color: var(--green); }
+    .habit-row.done .habit-check { background: var(--green); border-color: var(--green); box-shadow: 0 0 10px rgba(52,211,153,0.4); }
     .habit-check-icon { display: none; }
     .habit-row.done .habit-check-icon { display: block; }
     .habit-row.done .habit-check-empty { display: none; }
@@ -69,41 +76,41 @@
     .habit-row.done .habit-name { color: var(--text2); text-decoration: line-through; text-decoration-color: var(--text3); }
     .habit-meta { font-size: 12px; color: var(--text3); margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .habit-streak { font-size: 12px; color: var(--text3); background: var(--surface2); padding: 3px 8px; border-radius: 20px; white-space: nowrap; border: 0.5px solid var(--border); }
-    .habit-streak.hot { background: var(--amber-bg); color: var(--amber); border-color: rgba(239,159,39,0.2); }
+    .habit-streak.hot { background: var(--amber-dim); color: var(--amber); border-color: rgba(251,191,36,0.2); }
 
     /* Gate notice */
     .gate-notice { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius-sm); padding: 11px 14px; display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--text2); margin-top: 12px; }
     .gate-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-    .gate-dot.locked { background: var(--red); }
-    .gate-dot.unlocked { background: var(--green); }
+    .gate-dot.locked { background: var(--red); box-shadow: 0 0 6px rgba(248,113,113,0.5); }
+    .gate-dot.unlocked { background: var(--green); box-shadow: 0 0 6px rgba(52,211,153,0.5); }
 
     /* Todo */
     .tag-row { display: flex; gap: 6px; margin-bottom: 10px; overflow-x: auto; padding-bottom: 2px; scrollbar-width: none; }
     .tag-row::-webkit-scrollbar { display: none; }
     .tag-pill { font-size: 12px; padding: 5px 12px; border-radius: 20px; border: 0.5px solid var(--border2); background: var(--surface); color: var(--text2); cursor: pointer; white-space: nowrap; transition: all 0.1s; }
-    .tag-pill.active.general { background: var(--blue-bg); color: var(--blue); border-color: rgba(55,138,221,0.3); }
-    .tag-pill.active.coding { background: rgba(29,158,117,0.12); color: var(--green); border-color: rgba(29,158,117,0.3); }
-    .tag-pill.active.book { background: var(--amber-bg); color: var(--amber); border-color: rgba(239,159,39,0.3); }
-    .tag-pill.active.entertainment { background: var(--purple-bg); color: var(--purple); border-color: rgba(127,119,221,0.3); }
+    .tag-pill.active.general { background: var(--blue-dim); color: var(--blue); border-color: rgba(56,189,248,0.3); }
+    .tag-pill.active.coding { background: var(--green-dim); color: var(--green); border-color: rgba(52,211,153,0.3); }
+    .tag-pill.active.book { background: var(--amber-dim); color: var(--amber); border-color: rgba(251,191,36,0.3); }
+    .tag-pill.active.entertainment { background: var(--purple-dim); color: var(--purple); border-color: rgba(167,139,250,0.3); }
 
     .add-row { display: flex; gap: 8px; margin-bottom: 12px; }
     .add-row input { flex: 1; background: var(--surface); border: 0.5px solid var(--border2); border-radius: var(--radius-sm); padding: 12px 14px; font-size: 15px; color: var(--text); outline: none; transition: border-color 0.15s; }
     .add-row input::placeholder { color: var(--text3); }
-    .add-row input:focus { border-color: var(--blue); }
-    .add-row button { background: var(--blue); border: none; border-radius: var(--radius-sm); padding: 0 18px; font-size: 20px; color: white; cursor: pointer; font-weight: 300; transition: opacity 0.1s; }
+    .add-row input:focus { border-color: var(--blue); box-shadow: 0 0 0 2px rgba(56,189,248,0.1); }
+    .add-row button { background: linear-gradient(135deg, var(--blue), var(--purple)); border: none; border-radius: var(--radius-sm); padding: 0 18px; font-size: 20px; color: white; cursor: pointer; font-weight: 300; transition: opacity 0.1s; }
     .add-row button:active { opacity: 0.7; }
 
     .todo-list { display: flex; flex-direction: column; gap: 6px; }
     .todo-item { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius-sm); padding: 12px 14px; display: flex; align-items: center; gap: 10px; transition: background 0.1s; }
-    .todo-item.done { opacity: 0.45; }
+    .todo-item.done { opacity: 0.4; }
     .todo-cb { width: 20px; height: 20px; border-radius: 5px; border: 1.5px solid var(--border2); flex-shrink: 0; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.15s; }
-    .todo-item.done .todo-cb { background: var(--blue); border-color: var(--blue); }
+    .todo-item.done .todo-cb { background: var(--blue); border-color: var(--blue); box-shadow: 0 0 8px var(--blue-glow); }
     .todo-text { flex: 1; font-size: 14px; color: var(--text); }
     .todo-item.done .todo-text { text-decoration: line-through; color: var(--text3); }
     .todo-tag-badge { font-size: 11px; padding: 2px 8px; border-radius: 10px; white-space: nowrap; }
-    .todo-tag-badge.coding { background: rgba(29,158,117,0.15); color: var(--green); }
-    .todo-tag-badge.book { background: var(--amber-bg); color: var(--amber); }
-    .todo-tag-badge.entertainment { background: var(--purple-bg); color: var(--purple); }
+    .todo-tag-badge.coding { background: var(--green-dim); color: var(--green); }
+    .todo-tag-badge.book { background: var(--amber-dim); color: var(--amber); }
+    .todo-tag-badge.entertainment { background: var(--purple-dim); color: var(--purple); }
     .todo-del { background: none; border: none; color: var(--text3); font-size: 18px; cursor: pointer; padding: 0 2px; line-height: 1; flex-shrink: 0; transition: color 0.1s; }
     .todo-del:active { color: var(--red); }
     .empty-state { font-size: 14px; color: var(--text3); padding: 16px 0; text-align: center; }
@@ -113,21 +120,65 @@
     .week-day { flex: 1; text-align: center; }
     .week-label { font-size: 10px; color: var(--text3); margin-bottom: 5px; }
     .week-circle { width: 32px; height: 32px; border-radius: 50%; margin: 0 auto; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; }
-    .week-circle.done { background: var(--green); color: white; }
-    .week-circle.today-pending { border: 1.5px solid var(--blue); color: var(--blue); }
+    .week-circle.done { background: var(--green); color: #000; box-shadow: 0 0 10px rgba(52,211,153,0.4); }
+    .week-circle.today-pending { border: 1.5px solid var(--blue); color: var(--blue); box-shadow: 0 0 8px var(--blue-glow); }
     .week-circle.past-missed { background: var(--surface2); color: var(--text3); }
     .week-circle.future { background: transparent; color: var(--text3); }
 
     .reset-link { display: block; text-align: center; font-size: 12px; color: var(--text3); margin-top: 12px; cursor: pointer; text-decoration: underline; padding: 8px; }
 
-    /* Edit buttons on todos */
+    /* Edit buttons */
     .todo-edit { background: none; border: none; color: var(--text3); font-size: 14px; cursor: pointer; padding: 0 4px; line-height: 1; flex-shrink: 0; transition: color 0.1s; }
     .todo-edit:active { color: var(--blue); }
 
+    /* Bottom nav */
+    .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(8,8,16,0.92); border-top: 0.5px solid var(--border2); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); display: flex; justify-content: space-around; align-items: center; padding: 10px 0 env(safe-area-inset-bottom, 10px); z-index: 50; max-width: 480px; margin: 0 auto; }
+    .nav-btn { display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; padding: 4px 20px; background: none; border: none; transition: opacity 0.15s; }
+    .nav-icon { font-size: 20px; line-height: 1; }
+    .nav-label { font-size: 10px; color: var(--text3); font-weight: 500; letter-spacing: 0.04em; }
+    .nav-btn.active .nav-label { color: var(--blue); }
+    .nav-btn.active .nav-icon { filter: drop-shadow(0 0 6px var(--blue)); }
+
+    /* Pages */
+    .page { display: none; }
+    .page.active { display: block; }
+
+    /* Widget page */
+    .widget-card { background: var(--surface); border: 0.5px solid var(--border2); border-radius: 20px; padding: 18px; margin-bottom: 16px; position: relative; overflow: hidden; }
+    .widget-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, var(--blue), var(--purple)); }
+    .widget-title { font-size: 11px; font-weight: 600; color: var(--text3); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 14px; }
+    .widget-habits-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .widget-habit { background: var(--surface2); border: 0.5px solid var(--border); border-radius: var(--radius-sm); padding: 10px 12px; display: flex; align-items: center; gap: 8px; cursor: pointer; transition: all 0.15s; }
+    .widget-habit:active { opacity: 0.7; }
+    .widget-habit.done { border-color: rgba(52,211,153,0.3); background: rgba(52,211,153,0.07); }
+    .widget-dot { width: 10px; height: 10px; border-radius: 50%; border: 1.5px solid var(--border2); flex-shrink: 0; transition: all 0.15s; }
+    .widget-habit.done .widget-dot { background: var(--green); border-color: var(--green); box-shadow: 0 0 6px rgba(52,211,153,0.5); }
+    .widget-habit-name { font-size: 12px; color: var(--text); font-weight: 500; line-height: 1.3; }
+    .widget-habit.done .widget-habit-name { color: var(--text2); }
+    .widget-progress { height: 5px; background: var(--surface2); border-radius: 3px; margin-top: 12px; overflow: hidden; }
+    .widget-progress-fill { height: 100%; border-radius: 3px; background: linear-gradient(90deg, var(--blue), var(--purple)); transition: width 0.4s ease; }
+    .widget-progress-label { font-size: 12px; color: var(--text2); margin-top: 6px; display: flex; justify-content: space-between; }
+    .widget-todo-item { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 0.5px solid var(--border); cursor: pointer; }
+    .widget-todo-item:last-child { border-bottom: none; }
+    .widget-todo-item.done { opacity: 0.4; }
+    .widget-todo-cb { width: 16px; height: 16px; border-radius: 4px; border: 1.5px solid var(--border2); flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: all 0.15s; }
+    .widget-todo-item.done .widget-todo-cb { background: var(--blue); border-color: var(--blue); }
+    .widget-todo-text { font-size: 13px; color: var(--text); flex: 1; }
+    .widget-todo-item.done .widget-todo-text { text-decoration: line-through; color: var(--text3); }
+    .widget-streak-row { display: flex; gap: 8px; }
+    .widget-streak-card { flex: 1; background: var(--surface2); border-radius: var(--radius-sm); padding: 12px; text-align: center; border: 0.5px solid var(--border); }
+    .widget-streak-num { font-size: 28px; font-weight: 700; color: var(--blue); }
+    .widget-streak-label { font-size: 11px; color: var(--text2); margin-top: 2px; }
+    .widget-add-row { display: flex; gap: 8px; margin-top: 12px; }
+    .widget-add-input { flex: 1; background: var(--surface2); border: 0.5px solid var(--border2); border-radius: var(--radius-sm); padding: 10px 12px; font-size: 14px; color: var(--text); outline: none; }
+    .widget-add-input::placeholder { color: var(--text3); }
+    .widget-add-input:focus { border-color: var(--blue); }
+    .widget-add-btn { background: linear-gradient(135deg, var(--blue), var(--purple)); border: none; border-radius: var(--radius-sm); padding: 0 14px; font-size: 18px; color: white; cursor: pointer; }
+
     /* Bottom sheet modal */
-    .sheet-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 100; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
+    .sheet-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 100; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
     .sheet-overlay.open { opacity: 1; pointer-events: all; }
-    .sheet { position: fixed; bottom: 0; left: 0; right: 0; background: #1a1a1a; border-radius: 20px 20px 0 0; padding: 0 16px env(safe-area-inset-bottom, 20px); z-index: 101; transform: translateY(100%); transition: transform 0.25s cubic-bezier(0.32,0.72,0,1); max-width: 480px; margin: 0 auto; }
+    .sheet { position: fixed; bottom: 0; left: 0; right: 0; background: #0e0e1a; border-top: 0.5px solid var(--border2); border-radius: 20px 20px 0 0; padding: 0 16px env(safe-area-inset-bottom, 20px); z-index: 101; transform: translateY(100%); transition: transform 0.25s cubic-bezier(0.32,0.72,0,1); max-width: 480px; margin: 0 auto; }
     .sheet.open { transform: translateY(0); }
     .sheet-handle { width: 36px; height: 4px; background: var(--border2); border-radius: 2px; margin: 12px auto 20px; }
     .sheet-title { font-size: 13px; font-weight: 600; color: var(--text3); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 14px; }
@@ -135,16 +186,16 @@
     .sheet-input:focus { border-color: var(--blue); }
     .sheet-tags { display: flex; gap: 6px; margin-bottom: 18px; flex-wrap: wrap; }
     .sheet-tag { font-size: 12px; padding: 6px 14px; border-radius: 20px; border: 0.5px solid var(--border2); background: var(--surface2); color: var(--text2); cursor: pointer; transition: all 0.1s; }
-    .sheet-tag.active.general { background: var(--blue-bg); color: var(--blue); border-color: rgba(55,138,221,0.3); }
-    .sheet-tag.active.coding { background: rgba(29,158,117,0.12); color: var(--green); border-color: rgba(29,158,117,0.3); }
-    .sheet-tag.active.book { background: var(--amber-bg); color: var(--amber); border-color: rgba(239,159,39,0.3); }
-    .sheet-tag.active.entertainment { background: var(--purple-bg); color: var(--purple); border-color: rgba(127,119,221,0.3); }
+    .sheet-tag.active.general { background: var(--blue-dim); color: var(--blue); border-color: rgba(56,189,248,0.3); }
+    .sheet-tag.active.coding { background: var(--green-dim); color: var(--green); border-color: rgba(52,211,153,0.3); }
+    .sheet-tag.active.book { background: var(--amber-dim); color: var(--amber); border-color: rgba(251,191,36,0.3); }
+    .sheet-tag.active.entertainment { background: var(--purple-dim); color: var(--purple); border-color: rgba(167,139,250,0.3); }
     .sheet-actions { display: flex; gap: 8px; padding-bottom: 8px; }
-    .sheet-save { flex: 1; background: var(--blue); border: none; border-radius: var(--radius-sm); padding: 14px; font-size: 15px; font-weight: 600; color: white; cursor: pointer; transition: opacity 0.1s; }
+    .sheet-save { flex: 1; background: linear-gradient(135deg, var(--blue), var(--purple)); border: none; border-radius: var(--radius-sm); padding: 14px; font-size: 15px; font-weight: 600; color: white; cursor: pointer; transition: opacity 0.1s; }
     .sheet-save:active { opacity: 0.8; }
     .sheet-cancel { background: var(--surface2); border: 0.5px solid var(--border2); border-radius: var(--radius-sm); padding: 14px 18px; font-size: 15px; color: var(--text2); cursor: pointer; transition: opacity 0.1s; }
     .sheet-cancel:active { opacity: 0.7; }
-    .sheet-delete { background: rgba(226,75,74,0.12); border: 0.5px solid rgba(226,75,74,0.25); border-radius: var(--radius-sm); padding: 14px 16px; font-size: 15px; color: var(--red); cursor: pointer; transition: opacity 0.1s; }
+    .sheet-delete { background: var(--red-dim); border: 0.5px solid rgba(248,113,113,0.25); border-radius: var(--radius-sm); padding: 14px 16px; font-size: 15px; color: var(--red); cursor: pointer; transition: opacity 0.1s; }
     .sheet-delete:active { opacity: 0.7; }
     .sheet-meta-input { width: 100%; background: var(--surface2); border: 0.5px solid var(--border2); border-radius: var(--radius-sm); padding: 11px 14px; font-size: 14px; color: var(--text); outline: none; margin-bottom: 12px; }
     .sheet-meta-input:focus { border-color: var(--blue); }
@@ -155,10 +206,10 @@
     .toggle-switch input { opacity: 0; width: 0; height: 0; }
     .toggle-slider { position: absolute; inset: 0; background: var(--surface2); border-radius: 13px; cursor: pointer; transition: background 0.2s; border: 0.5px solid var(--border2); }
     .toggle-slider:before { content: ''; position: absolute; width: 20px; height: 20px; left: 2px; top: 2px; background: var(--text3); border-radius: 50%; transition: transform 0.2s, background 0.2s; }
-    .toggle-switch input:checked + .toggle-slider { background: rgba(29,158,117,0.25); border-color: rgba(29,158,117,0.4); }
-    .toggle-switch input:checked + .toggle-slider:before { transform: translateX(18px); background: var(--green); }
+    .toggle-switch input:checked + .toggle-slider { background: rgba(56,189,248,0.2); border-color: rgba(56,189,248,0.4); }
+    .toggle-switch input:checked + .toggle-slider:before { transform: translateX(18px); background: var(--blue); }
     .habit-edit-btn { background: none; border: none; color: var(--text3); font-size: 14px; cursor: pointer; padding: 6px; line-height: 1; flex-shrink: 0; transition: color 0.1s; }
-    .habit-edit-btn:active { color: var(--blue); }
+    .habit-edit-btn:active { color: var(--purple); }
     .section-header-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; margin-top: 24px; }
     .section-header-row .section-label { margin: 0; }
     .add-habit-btn { font-size: 12px; color: var(--blue); background: none; border: none; cursor: pointer; padding: 2px 0; }
@@ -166,43 +217,89 @@
 </head>
 <body>
 <div id="app">
-  <div class="header">
-    <div class="header-left">
-      <h1>Hero System</h1>
-      <p>Daily non-zero rule</p>
+
+  <!-- Page: Main -->
+  <div class="page active" id="page-main">
+    <div class="header">
+      <div class="header-left">
+        <h1>Hero System</h1>
+        <p>Daily non-zero rule</p>
+      </div>
+      <div class="header-date" id="header-date"></div>
     </div>
-    <div class="header-date" id="header-date"></div>
+
+    <div class="stats-row" id="stats-row"></div>
+
+    <div class="section-header-row">
+      <div class="section-label">Habits</div>
+      <button class="add-habit-btn" onclick="openAddHabit()">+ Add habit</button>
+    </div>
+    <div class="habit-list" id="habit-list"></div>
+    <div class="gate-notice" id="gate-notice">
+      <div class="gate-dot locked" id="gate-dot"></div>
+      <span id="gate-text">Complete Hero Coding to unlock entertainment gates</span>
+    </div>
+
+    <div class="section-label">Today's tasks</div>
+    <div class="tag-row" id="tag-row"></div>
+    <div class="add-row">
+      <input type="text" id="todo-input" placeholder="Add a task..." />
+      <button id="add-btn">+</button>
+    </div>
+    <div class="todo-list" id="todo-list"></div>
+
+    <div class="section-label">This week — Hero Coding</div>
+    <div class="week-row" id="week-row"></div>
+    <span class="reset-link" onclick="resetToday()">Reset today's habits</span>
   </div>
 
-  <div class="stats-row" id="stats-row"></div>
+  <!-- Page: Widget -->
+  <div class="page" id="page-widget">
+    <div class="header">
+      <div class="header-left">
+        <h1>Quick View</h1>
+        <p>Fast access to today</p>
+      </div>
+      <div class="header-date" id="widget-date"></div>
+    </div>
 
-  <div class="section-header-row">
-    <div class="section-label">Habits</div>
-    <button class="add-habit-btn" onclick="openAddHabit()">+ Add habit</button>
-  </div>
-  <div class="habit-list" id="habit-list"></div>
-  <div class="gate-notice" id="gate-notice">
-    <div class="gate-dot locked" id="gate-dot"></div>
-    <span id="gate-text">Complete Hero Coding to unlock entertainment gates</span>
+    <div class="widget-card" id="widget-streak-section">
+      <div class="widget-title">Streak</div>
+      <div class="widget-streak-row" id="widget-streak-row"></div>
+    </div>
+
+    <div class="widget-card">
+      <div class="widget-title">Today's habits</div>
+      <div class="widget-habits-grid" id="widget-habits-grid"></div>
+      <div class="widget-progress" id="widget-progress-bar">
+        <div class="widget-progress-fill" id="widget-progress-fill"></div>
+      </div>
+      <div class="widget-progress-label" id="widget-progress-label"></div>
+    </div>
+
+    <div class="widget-card">
+      <div class="widget-title">Tasks</div>
+      <div id="widget-todo-list"></div>
+      <div class="widget-add-row">
+        <input class="widget-add-input" type="text" id="widget-todo-input" placeholder="Quick add task..." />
+        <button class="widget-add-btn" onclick="widgetAddTodo()">+</button>
+      </div>
+    </div>
   </div>
 
-  <div class="section-label">Today's tasks</div>
-  <div class="tag-row" id="tag-row">
-    <div class="tag-pill active general" onclick="setTag('general')">General</div>
-    <div class="tag-pill coding" onclick="setTag('coding')">Coding</div>
-    <div class="tag-pill book" onclick="setTag('book')">Book project</div>
-    <div class="tag-pill entertainment" onclick="setTag('entertainment')">Entertainment</div>
-  </div>
-  <div class="add-row">
-    <input type="text" id="todo-input" placeholder="Add a task..." />
-    <button id="add-btn">+</button>
-  </div>
-  <div class="todo-list" id="todo-list"></div>
-
-  <div class="section-label">This week — Hero Coding</div>
-  <div class="week-row" id="week-row"></div>
-  <span class="reset-link" onclick="resetToday()">Reset today's habits</span>
 </div>
+
+<!-- Bottom nav -->
+<nav class="bottom-nav">
+  <button class="nav-btn active" id="nav-main" onclick="switchPage('main')">
+    <span class="nav-icon">⚡</span>
+    <span class="nav-label">Dashboard</span>
+  </button>
+  <button class="nav-btn" id="nav-widget" onclick="switchPage('widget')">
+    <span class="nav-icon">◈</span>
+    <span class="nav-label">Widget</span>
+  </button>
+</nav>
 
 <!-- Edit bottom sheet (todos) -->
 <div class="sheet-overlay" id="sheet-overlay" onclick="closeSheet()"></div>
@@ -341,7 +438,7 @@ function renderStats() {
   const todayTodos = state.todos.filter(t => t.date === k);
   const doneT = todayTodos.filter(t => t.done).length;
   document.getElementById('stats-row').innerHTML = `
-    <div class="stat-card"><div class="stat-num green">${state.codingStreak||0}</div><div class="stat-label">Coding streak</div></div>
+    <div class="stat-card"><div class="stat-num accent">${state.codingStreak||0}</div><div class="stat-label">Coding streak</div></div>
     <div class="stat-card"><div class="stat-num">${doneH}/${state.habits.length}</div><div class="stat-label">Habits today</div></div>
     <div class="stat-card"><div class="stat-num">${doneT}/${todayTodos.length||0}</div><div class="stat-label">Tasks done</div></div>
     <div class="stat-card"><div class="stat-num">${state.longestStreak||0}</div><div class="stat-label">Best streak</div></div>
@@ -556,11 +653,67 @@ function deleteHabit() {
 document.getElementById('habit-sheet-name').addEventListener('keydown', e => { if(e.key==='Enter') document.getElementById('habit-sheet-meta').focus(); });
 
 if ('serviceWorker' in navigator) {
-  // Unregister any old broken service workers
   navigator.serviceWorker.getRegistrations().then(regs => {
     regs.forEach(reg => reg.unregister());
   });
 }
+
+// Page switching
+let currentPage = 'main';
+function switchPage(page) {
+  currentPage = page;
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-' + page).classList.add('active');
+  document.getElementById('nav-' + page).classList.add('active');
+  if (page === 'widget') renderWidget();
+}
+
+function renderWidget() {
+  const k = todayKey();
+  const now = new Date();
+  document.getElementById('widget-date').innerHTML =
+    now.toLocaleDateString('en-IN', {weekday:'short', day:'numeric', month:'short'}).replace(',','<br>');
+  document.getElementById('widget-streak-row').innerHTML = `
+    <div class="widget-streak-card"><div class="widget-streak-num">${state.codingStreak||0}</div><div class="widget-streak-label">Day streak 🔥</div></div>
+    <div class="widget-streak-card"><div class="widget-streak-num" style="color:var(--purple)">${state.longestStreak||0}</div><div class="widget-streak-label">Best streak</div></div>
+  `;
+  const todayH = state.habitsDone[k] || {};
+  const codingDone = isCodingDone();
+  document.getElementById('widget-habits-grid').innerHTML = state.habits.map(h => {
+    const done = !!todayH[h.id];
+    const locked = h.gated && !codingDone;
+    return `<div class="widget-habit${done?' done':''}${locked?' locked':''}" onclick="if(!${locked}){toggleHabit('${h.id}');renderWidget();}">
+      <div class="widget-dot"></div>
+      <span class="widget-habit-name">${h.name}</span>
+    </div>`;
+  }).join('');
+  const doneCount = state.habits.filter(h => todayH[h.id]).length;
+  const total = state.habits.length;
+  const pct = total ? Math.round((doneCount / total) * 100) : 0;
+  document.getElementById('widget-progress-fill').style.width = pct + '%';
+  document.getElementById('widget-progress-label').innerHTML = `<span>${doneCount}/${total} habits</span><span>${pct}%</span>`;
+  const todayTodos = state.todos.filter(t => t.date === k);
+  const ordered = [...todayTodos.filter(t=>!t.done), ...todayTodos.filter(t=>t.done)].slice(0,8);
+  const list = document.getElementById('widget-todo-list');
+  list.innerHTML = ordered.length === 0
+    ? '<div style="font-size:13px;color:var(--text3);padding:8px 0;">No tasks yet</div>'
+    : ordered.map(t => `<div class="widget-todo-item${t.done?' done':''}" onclick="toggleTodo(${t.id});renderWidget();">
+        <div class="widget-todo-cb">${t.done?'<svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5L3.5 6L8 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>':''}</div>
+        <span class="widget-todo-text">${t.text}</span>
+      </div>`).join('');
+}
+
+function widgetAddTodo() {
+  const input = document.getElementById('widget-todo-input');
+  const text = input.value.trim();
+  if (!text) return;
+  state.todos.push({ id: nextId++, text, tag: 'general', done: false, date: todayKey() });
+  input.value = '';
+  save(); renderWidget(); renderStats();
+}
+
+document.getElementById('widget-todo-input').addEventListener('keydown', e => { if(e.key==='Enter') widgetAddTodo(); });
 
 render();
 </script>
